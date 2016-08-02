@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="import" href="./library/components/taskhead.html">
+        <meta charset="utf-8">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.21/webcomponents.min.js"></script>
+        <link rel="import" href="./library/components/oi-tasklist.html">
         <link rel="stylesheet" href="/css/style.css" media="screen" title="no title" charset="utf-8">
+
+        <script type="text/javascript" src="http://happy-dev.fr/library/LDP-framework/ldpframework.js"></script>
     </head>
     <body>
-        <oi-taskhead></oi-taskhead>
-
+        <oi-tasklist data-scr="http://ldp.happy-dev.fr/ldp/projects/">
+            <task><span data-toto="truc" 'class="project-title">Essai de content</span></task>
+            <task>tache 2</task>
+        </oi-tasklist>
     </body>
 </html>

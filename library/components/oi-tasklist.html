@@ -1,0 +1,177 @@
+<template id="task-head">
+    <style scoped>
+        *{
+            box-sizing: border-box;
+        }
+        h1, h3 {
+            color: #CCC;
+        }
+        ul {
+            list-style-type: none;
+            border-top: solid 1px #fff;
+            padding-left: 0px;
+            width:100%;
+        }
+
+        li {
+            background-color: #eeefe0;
+            color: #000;
+            border: solid 1px #fff;
+            border-top: none;
+
+        }
+        .id, .etat, .titre, .auteur, .lot, .comment {
+            display:inline-block;;
+            padding: 0.5em 5px;
+            border-right: solid 1px #fff;
+            background-color: #fc0;
+            color: #fff;
+        }
+        .id, .etat, .lot {
+            width:5%;
+        }
+        .auteur{
+            width:15%;
+        }
+        .titre, .comment {
+            width:34%;
+        }
+
+    </style>
+    <h1>Tableau des tâches du projet</h1>
+    <h3 class="stitre"></h3>
+</template>
+<template id="task-list">
+    <style media="screen">
+        *{
+            box-sizing: border-box;
+        }
+        h1, h3 {
+            color: #CCC;
+        }
+        ul {
+            list-style-type: none;
+            border-top: solid 1px #fff;
+            padding-left: 0px;
+            width:100%;
+        }
+
+        ul li {
+            display:inline-block;;
+            background-color: #eeefe0;
+            color: #000;
+            border: solid 1px #fff;
+            border-top: none;
+            height : 2em;
+
+        }
+
+        .id, .etat, .titre, .auteur, .lot, .comment {
+            padding: 0 5px;
+            background-color: #eee;
+            border-right: solid 1px #fff;
+            color: #000;
+        }
+        .hd .id, .hd .etat, .hd .titre, .hd .auteur, .hd .lot, .hd .comment {
+            background-color: #fc0;
+            color: #fff;
+        }
+        .id, .etat, .lot {
+            width:5%;
+        }
+        .auteur{
+            width:15%;
+        }
+        .titre, .comment {
+            width:34%;
+        }
+
+    </style>
+    <h1>Tableau des tâches du projet</h1>
+    <h3>Project : FNAM, Id : 2241</h3>
+    <ul class="hd">
+    </ul>
+    <content select="task"></content>
+
+
+</template>
+<script type="text/javascript" src="http://happy-dev.fr/library/LDP-framework/ldpframework.js"></script>
+<script>
+    (function(){
+        var localDoc = document._currentScript.ownerDocument;
+        window.store = new MyStore({context: "http://owl.openinitiative.com/oicontext.jsonld"});
+        // la variable p contient le projet
+        store.get("http://projects.openinitiative.com/project/ldpcontainer/2241").then(x=>{
+            p=x;
+            // la variable t contient les taches
+            store.get(p.tasks[0]).then(x=>{
+                t=x;
+            });
+        });
+
+		var taskListPrototype = Object.create(HTMLElement.prototype, {
+			createdCallback: {
+                value: function() {
+                    var template = localDoc.querySelector('#task-head');
+                    var clone = document.importNode(template.content, true);
+
+                    //création entête tableau
+                    var namecol = [{n:'Id',s:'id'}, {n:'Etat',s:'etat'}, {n:'Titre',s:'titre'}, {n:'Auteur',s:'auteur'}, {n:'Lot',s:'lot'}, {n:'Commentaire(s)',s:'comment'}];
+                    var mycols = '';
+                    for (var i = 0; i < namecol.length; i++) {
+                        mycols += '<span class='+namecol[i].s+'>' + namecol[i].n + '</span>';
+                    }
+                    essai = document.createElement('ul');
+                    essai.appendChild(document.createElement('li'))
+                    essai.innerHTML = mycols;
+                    clone.appendChild(essai);
+//                    console.log(clone);
+                    store.get("http://projects.openinitiative.com/project/ldpcontainer/2241").then(x=>{
+                        p=x;
+                        var stitle = template.content.querySelector('.stitre');
+                        stitle.innerHTML = "Project : "+ p.title +", Id : " + p.id;
+                        console.dir(stitle);
+                        clone.appendChild(stitle);
+                    });
+
+                    //console.dir(this.dataset);
+                    this.createShadowRoot().appendChild(clone);
+                }
+            }
+		});
+
+
+
+        document.registerElement('oi-tasklist',{prototype: taskListPrototype});
+
+        var taskPrototype = Object.create(HTMLElement.prototype, {
+			createdCallback: {
+                value: function() {
+                    var clone = document.importNode(localDoc.querySelector('#task-list').content, true);
+
+                    var mali = "<li class=\"id\">val1</li>";
+                    mali +="<li class=\"etat\">val2</li>";
+                    mali +="<li class=\"titre\">val3</li>";
+                    mali +="<li class=\"auteur\">val4</li>";
+                    mali +="<li class=\"lot\">val5</li>";
+                    mali +="<li class=\"comment\">val6</li>";
+
+                    var essai = document.createElement("ul");
+                    essai.innerHTML = mali;
+                    clone.appendChild(essai);
+
+                    //                    console.dir(this);
+                    this.createShadowRoot().appendChild(clone);
+                }
+            }
+		});
+
+
+
+        document.registerElement('oi-task',{prototype: taskPrototype});
+
+
+
+    })();
+
+</script>
