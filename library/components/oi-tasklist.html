@@ -115,27 +115,28 @@
                     var template = localDoc.querySelector('#task-head');
                     var clone = document.importNode(template.content, true);
 
-                    //création entête tableau
-                    var namecol = [{n:'Id',s:'id'}, {n:'Etat',s:'etat'}, {n:'Titre',s:'titre'}, {n:'Auteur',s:'auteur'}, {n:'Lot',s:'lot'}, {n:'Commentaire(s)',s:'comment'}];
-                    var mycols = '';
-                    for (var i = 0; i < namecol.length; i++) {
-                        mycols += '<span class='+namecol[i].s+'>' + namecol[i].n + '</span>';
-                    }
-                    essai = document.createElement('ul');
-                    essai.appendChild(document.createElement('li'))
-                    essai.innerHTML = mycols;
-                    clone.appendChild(essai);
-//                    console.log(clone);
                     store.get("http://projects.openinitiative.com/project/ldpcontainer/2241").then(x=>{
                         p=x;
+                        //creation du sous titre
                         var stitle = template.content.querySelector('.stitre');
                         stitle.innerHTML = "Project : "+ p.title +", Id : " + p.id;
-                        console.dir(stitle);
+                        //création entête tableau
+                        var namecol = [{n:'Id',s:'id'}, {n:'Etat',s:'etat'}, {n:'Titre',s:'titre'}, {n:'Auteur',s:'auteur'}, {n:'Lot',s:'lot'}, {n:'Commentaire(s)',s:'comment'}];
+                        var mycols = '';
+                        for (var i = 0; i < namecol.length; i++) {
+                            mycols += '<span class='+namecol[i].s+'>' + namecol[i].n + '</span>';
+                        }
+                        essai = document.createElement('ul');
+                        essai.appendChild(document.createElement('li'))
+                        essai.innerHTML = mycols;
                         clone.appendChild(stitle);
+                        clone.appendChild(essai);
+                        //                    console.log(clone);
+                        console.dir(clone);
+                        this.createShadowRoot().appendChild(clone);
                     });
 
                     //console.dir(this.dataset);
-                    this.createShadowRoot().appendChild(clone);
                 }
             }
 		});
