@@ -6,39 +6,33 @@
         h1, h3 {
             color: #CCC;
         }
-        ul {
+        div {
             list-style-type: none;
             border-top: solid 1px #fff;
             padding-left: 0px;
             width:100%;
         }
-
-        li {
-            background-color: #eeefe0;
-            color: #000;
-            border: solid 1px #fff;
-            border-top: none;
-
-        }
-        .id, .etat, .titre, .auteur, .lot, .comment {
+        .id,  .etat,  .titre,  .auteur,  .lot,  .comment {
             display:inline-block;;
             padding: 0.5em 5px;
             border-right: solid 1px #fff;
+        }
+        .tk{
             background-color: #eee;
             color: #000;
         }
-        .hd .id, .hd .etat, .hd .titre, .hd .auteur, .hd .lot, .hd .comment {
+        .hd{
             background-color: #fc0;
             color: #fff;
         }
         .id, .etat, .lot {
             width:5%;
         }
-        .auteur{
+        .auteur, .comment{
             width:15%;
         }
-        .titre, .comment {
-            width:34%;
+        .titre {
+            width:54%;
         }
 
     </style>
@@ -62,15 +56,20 @@
                     // la variable p contient le projet
                     store.get("http://projects.openinitiative.com/project/ldpcontainer/2241").then(x=>{
                         p=x;
-                        for(i=0;i<p.tasks.length;i++){
+                        for(i=0;i<p.descendants.length;i++){
                             // la variable t contient les taches
-                            store.get(p.tasks[i]).then(x=>{
+                            store.get(p.descendants[i]).then(x=>{
                                 t=x;
                                 console.log(t);
                                 //creation entrée dans le tableau
-                                var cloneline = document.createElement("ul");
+                                var cloneline = document.createElement("div");
+                                cloneline.className = "tk";
+                                var target = "";
+                                var comment = "";
+                                !!t.target?target=t.target.name : target=".";
+                                !!t.comments?comments=t.comments[0] : comments=".";
                                 var myrow = '<span class="id">'+ t.id + '</span><span class="etat">'+ t.state + '</span><span class="titre">'+ t.title + '</span><span class="auteur">';
-                                myrow += t.author.fullName+'</span><span class="lot">'+t.target+'</span><span class="comment">'+ t.comments + '</span>';
+                                myrow += t.author.fullName+'</span><span class="lot">'+target+'</span><span class="comment">'+ comments + '</span>';
                                 cloneline.innerHTML = myrow;
                                 this.shadowRoot.appendChild(cloneline);
                                 console.dir(cloneline);
@@ -85,9 +84,8 @@
                         for (var i = 0; i < namecol.length; i++) {
                             mycols += '<span class='+namecol[i].s+'>' + namecol[i].n + '</span>';
                         }
-                        tableHeader = document.createElement('ul');
+                        tableHeader = document.createElement('div');
                         tableHeader.className = "hd";
-                        tableHeader.appendChild(document.createElement('li'))
                         tableHeader.innerHTML = mycols;
 
                         //mise à jour du shadow DOM
@@ -118,7 +116,7 @@
                     mali +="<li class=\"lot\">val5</li>";
                     mali +="<li class=\"comment\">val6</li>";
 
-                    var essai = document.createElement("ul");
+                    var essai = document.createElement("div");
                     essai.innerHTML = mali;
                     clone.appendChild(essai);
 
