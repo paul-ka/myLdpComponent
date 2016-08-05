@@ -96,9 +96,15 @@
                         tableHeader.children[0].children[1].addEventListener("keyup",function(){
                             // chid contient l'id à chercher
                             var chid = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#id').value;
-                            // base contient toutes les <span class="id"> 
+                            // base contient toutes les <span class="id">
                             var base = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .id');
-                            base.forEach(function(e,i,a){if(e.innerHTML.indexOf(chid)==-1){e.parentNode.style.display='none';}});
+                            base.forEach(function(e,i,a){
+                                if(e.innerHTML.indexOf(chid)==-1){
+                                    e.parentNode.style.display='none';
+                                } else {
+                                    e.parentNode.style.display='initial';
+                                }
+                            });
                         });
 
                         //mise à jour du shadow DOM
