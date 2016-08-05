@@ -101,6 +101,10 @@
                             // chxxx contient la chaine à chercher dans la colonne xxx
                             var chid = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#id').value;
                             var chetat = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#etat').value;
+                            var chtitre = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#titre').value.toUpperCase();
+                            var chauteur = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#auteur').value.toUpperCase();
+                            var chlot = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#lot').value.toUpperCase();
+                            var chcomment = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#comment').value.toUpperCase();
                             // basexxx contient toutes les <span class="xxx">
                             var baseid = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .id');
                             baseid.forEach(function(e,i,a){
@@ -109,6 +113,22 @@
                             var baseetat = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .etat');
                             baseetat.forEach(function(e,i,a){
                                 if(e.innerHTML.indexOf(chetat)==-1){e.parentNode.style.display='none';}
+                            });
+                            var basetitre = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .titre');
+                            basetitre.forEach(function(e,i,a){
+                                if(e.innerHTML.toUpperCase().indexOf(chtitre)==-1){e.parentNode.style.display='none';}
+                            });
+                            var baseauteur = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .auteur');
+                            baseauteur.forEach(function(e,i,a){
+                                if(e.innerHTML.toUpperCase().indexOf(chauteur)==-1){e.parentNode.style.display='none';}
+                            });
+                            var baselot = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .titre');
+                            baselot.forEach(function(e,i,a){
+                                if(e.innerHTML.toUpperCase().indexOf(chlot)==-1){e.parentNode.style.display='none';}
+                            });
+                            var basecomment = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .auteur');
+                            basecomment.forEach(function(e,i,a){
+                                if(e.innerHTML.toUpperCase().indexOf(chcomment)==-1){e.parentNode.style.display='none';}
                             });
                         });
 
