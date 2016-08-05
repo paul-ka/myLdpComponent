@@ -7,7 +7,6 @@
             color: #CCC;
         }
         div {
-            list-style-type: none;
             border-top: solid 1px #fff;
             padding-left: 0px;
             width:100%;
@@ -30,6 +29,9 @@
         .tk{
             background-color: #eee;
             color: #000;
+        }
+        .tk span{
+            background-color: #eee;
         }
         .id, .etat, .lot {
             width:5%;
@@ -60,7 +62,7 @@
                     var clone = document.importNode(template.content, true);
 
                     // la variable p contient le projet
-                    store.get("http://projects.openinitiative.com/project/ldpcontainer/2241").then(x=>{
+                    store.get("http://projects.openinitiative.com/project/ldpcontainer/2269").then(x=>{
                         p=x;
                         for(i=0;i<p.descendants.length;i++){
                             // la variable t contient les taches
@@ -122,11 +124,11 @@
                             baseauteur.forEach(function(e,i,a){
                                 if(e.innerHTML.toUpperCase().indexOf(chauteur)==-1){e.parentNode.style.display='none';}
                             });
-                            var baselot = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .titre');
+                            var baselot = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .lot');
                             baselot.forEach(function(e,i,a){
                                 if(e.innerHTML.toUpperCase().indexOf(chlot)==-1){e.parentNode.style.display='none';}
                             });
-                            var basecomment = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .auteur');
+                            var basecomment = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .comment');
                             basecomment.forEach(function(e,i,a){
                                 if(e.innerHTML.toUpperCase().indexOf(chcomment)==-1){e.parentNode.style.display='none';}
                             });
@@ -147,33 +149,6 @@
 
 
         document.registerElement('oi-tasklist',{prototype: taskListPrototype});
-
-        var taskPrototype = Object.create(HTMLElement.prototype, {
-			createdCallback: {
-                value: function() {
-                    var clone = document.importNode(localDoc.querySelector('#task-list').content, true);
-
-                    var mali = "<li class=\"id\">val1</li>";
-                    mali +="<li class=\"etat\">val2</li>";
-                    mali +="<li class=\"titre\">val3</li>";
-                    mali +="<li class=\"auteur\">val4</li>";
-                    mali +="<li class=\"lot\">val5</li>";
-                    mali +="<li class=\"comment\">val6</li>";
-
-                    var essai = document.createElement("div");
-                    essai.innerHTML = mali;
-                    clone.appendChild(essai);
-
-                    //                    console.dir(this);
-                    this.createShadowRoot().appendChild(clone);
-                }
-            }
-		});
-
-
-
-        document.registerElement('oi-task',{prototype: taskPrototype});
-
 
 
     })();
