@@ -53,7 +53,6 @@
     (function(){
         var localDoc = document._currentScript.ownerDocument;
         window.store = new MyStore({context: "http://owl.openinitiative.com/oicontext.jsonld"});
-
 		var taskListPrototype = Object.create(HTMLElement.prototype, {
 			createdCallback: {
                 value: function() {
@@ -92,18 +91,24 @@
                         tableHeader = document.createElement('div');
                         tableHeader.className = "hd";
                         tableHeader.innerHTML = mycols;
-                        //détection relachement touche sur le champ id
-                        tableHeader.children[0].children[1].addEventListener("keyup",function(){
-                            // chid contient l'id à chercher
-                            var chid = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#id').value;
-                            // base contient toutes les <span class="id">
-                            var base = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .id');
+                        //détection relachement touche sur un champ de la barre de titre
+                        tableHeader.addEventListener("keyup",function(){
+                            // initialise affichage à visible
+                            var base = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk');
                             base.forEach(function(e,i,a){
-                                if(e.innerHTML.indexOf(chid)==-1){
-                                    e.parentNode.style.display='none';
-                                } else {
-                                    e.parentNode.style.display='initial';
-                                }
+                                e.style.display='initial';
+                            });
+                            // chxxx contient la chaine à chercher dans la colonne xxx
+                            var chid = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#id').value;
+                            var chetat = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#etat').value;
+                            // basexxx contient toutes les <span class="xxx">
+                            var baseid = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .id');
+                            baseid.forEach(function(e,i,a){
+                                if(e.innerHTML.indexOf(chid)==-1){e.parentNode.style.display='none';}
+                            });
+                            var baseetat = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .etat');
+                            baseetat.forEach(function(e,i,a){
+                                if(e.innerHTML.indexOf(chetat)==-1){e.parentNode.style.display='none';}
                             });
                         });
 
