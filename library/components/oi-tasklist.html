@@ -17,13 +17,19 @@
             padding: 0.5em 5px;
             border-right: solid 1px #fff;
         }
-        .tk{
-            background-color: #eee;
-            color: #000;
-        }
         .hd{
             background-color: #fc0;
             color: #fff;
+        }
+        .hd input{
+            width : 100%;
+            background-color: #fd8;
+            margin-top:1px;
+            border:none;
+        }
+        .tk{
+            background-color: #eee;
+            color: #000;
         }
         .id, .etat, .lot {
             width:5%;
@@ -32,7 +38,7 @@
             width:15%;
         }
         .titre {
-            width:54%;
+            width:55%;
         }
 
     </style>
@@ -42,6 +48,7 @@
 
 </template>
 <script type="text/javascript" src="http://happy-dev.fr/library/LDP-framework/ldpframework.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
 <script>
     (function(){
         var localDoc = document._currentScript.ownerDocument;
@@ -60,7 +67,6 @@
                             // la variable t contient les taches
                             store.get(p.descendants[i]).then(x=>{
                                 t=x;
-                                console.log(t);
                                 //creation entrée dans le tableau
                                 var cloneline = document.createElement("div");
                                 cloneline.className = "tk";
@@ -72,7 +78,6 @@
                                 myrow += t.author.fullName+'</span><span class="lot">'+target+'</span><span class="comment">'+ comments + '</span>';
                                 cloneline.innerHTML = myrow;
                                 this.shadowRoot.appendChild(cloneline);
-                                console.dir(cloneline);
                             });
                         }
                         //creation du sous titre
@@ -82,11 +87,19 @@
                         var namecol = [{n:'Id',s:'id'}, {n:'Etat',s:'etat'}, {n:'Titre',s:'titre'}, {n:'Auteur',s:'auteur'}, {n:'Lot',s:'lot'}, {n:'Commentaire(s)',s:'comment'}];
                         var mycols = '';
                         for (var i = 0; i < namecol.length; i++) {
-                            mycols += '<span class='+namecol[i].s+'>' + namecol[i].n + '</span>';
+                            mycols += '<span class='+namecol[i].s+'>' + namecol[i].n + '<br><input id="'+namecol[i].s+'"></input></span>';
                         }
                         tableHeader = document.createElement('div');
                         tableHeader.className = "hd";
                         tableHeader.innerHTML = mycols;
+                        //détection relachement touche sur le champ id
+                        tableHeader.children[0].children[1].addEventListener("keyup",function(){
+                            // chid contient l'id à chercher
+                            var chid = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#id').value;
+                            // base contient toutes les <span class="id"> 
+                            var base = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .id');
+                            base.forEach(function(e,i,a){if(e.innerHTML.indexOf(chid)==-1){e.parentNode.style.display='none';}});
+                        });
 
                         //mise à jour du shadow DOM
                         clone.appendChild(stitle);
