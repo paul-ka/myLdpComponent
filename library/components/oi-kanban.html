@@ -1,0 +1,161 @@
+<template id="task-head">
+    <style scoped>
+        *{
+            box-sizing: border-box;
+        }
+        h1, h3 {
+            color: #CCC;
+        }
+        div {
+            border-top: solid 1px #fff;
+            padding-left: 0px;
+        }
+        .liste {
+            display:inline-block;
+            width:20%;
+            padding: 0.5em 5px;
+            border: solid 1px #fff;
+            background-color: #fc0;
+            color: #fff;
+            vertical-align: text-top;
+        }
+        .task {
+            background-color: #fff;
+            color:#000;
+        }
+        h4{
+            margin : 0 2px;
+        }
+    </style>
+    <h1>Tableau des tâches du projet</h1>
+    <h3 class="stitre"></h3>
+</template>
+<script type="text/javascript" src="http://happy-dev.fr/library/LDP-framework/ldpframework.js"></script>
+<script>
+    (function(){
+        var localDoc = document._currentScript.ownerDocument;
+        window.store = new MyStore({context: "http://owl.openinitiative.com/oicontext.jsonld"});
+		var taskListPrototype = Object.create(HTMLElement.prototype, {
+			createdCallback: {
+                value: function() {
+                    var template = localDoc.querySelector('#task-head');
+                    var clone = document.importNode(template.content, true);
+                    var liste =[];//liste des rubriques
+                    var iliste = 0;//index de liste
+                    var col = [];//colonnes html exportées dans le shadowDOM
+                    var rub;//rubrique en cours
+
+                    // la variable p contient le projet
+                    store.get("http://projects.openinitiative.com/project/ldpcontainer/2269").then(x=>{
+                        p=x;
+                        for(i=0;i<p.descendants.length;i++){
+                            // la variable t contient les taches
+                            store.get(p.descendants[i]).then(x=>{
+                                t=x;
+                                //si pas de lot création d'une liste A classer
+                                !t.target?rub="A classer":rub=t.target.name;
+                                //recherche le lot dans la variable liste
+                                if(!liste.find(e => e == rub)){
+                                    col[iliste]=document.createElement("div");
+                                    col[iliste].className = "liste";
+                                    col[iliste].innerHTML = "<h4>"+ rub +"</h4>";
+                                    clone.appendChild(col[iliste]);
+                                    this.shadowRoot.appendChild(clone);
+                                    liste.push(rub);
+                                };
+                                if(!t.target){
+                                    iliste=liste.indexOf("A classer");
+                                }else{
+                                    iliste=liste.indexOf(t.target.name);
+                                }
+                                var task = document.createElement("div");
+                                task.className = "task";
+                                task.innerHTML = "<h4>"+ t.id +"</h4>";
+                                task.innerHTML += "<h4>"+ t.title +"</h4>";
+                                task.innerHTML += "<p>"+ t.author.fullName +"</p>";
+                                this.shadowRoot.querySelectorAll('.liste')[iliste].appendChild(task);
+                        //         //creation entrée dans le tableau
+                        //         var cloneline = document.createElement("div");
+                        //         cloneline.className = "tk";
+                        //         var target = "";
+                        //         var comment = "";
+                        //         !!t.target?target=t.target.name : target=".";
+                        //         !!t.comments?comments=t.comments[0] : comments=".";
+                        //         var myrow = '<span class="id">'+ t.id + '</span><span class="etat">'+ t.state + '</span><span class="titre">'+ t.title + '</span><span class="auteur">';
+                        //         myrow += t.author.fullName+'</span><span class="lot">'+target+'</span><span class="comment">'+ comments + '</span>';
+                        //         cloneline.innerHTML = myrow;
+                        //         this.shadowRoot.appendChild(cloneline);
+                            });
+                        }
+                        //creation du sous titre
+                        var stitle = template.content.querySelector('.stitre');
+                        stitle.innerHTML = "Project : "+ p.title +", Id : " + p.id;
+                        // //création entête tableau
+                        // var namecol = [{n:'Id',s:'id'}, {n:'Etat',s:'etat'}, {n:'Titre',s:'titre'}, {n:'Auteur',s:'auteur'}, {n:'Lot',s:'lot'}, {n:'Commentaire(s)',s:'comment'}];
+                        // var mycols = '';
+                        // for (var i = 0; i < namecol.length; i++) {
+                        //     mycols += '<span class='+namecol[i].s+'>' + namecol[i].n + '<br><input id="'+namecol[i].s+'"></input></span>';
+                        // }
+                        // tableHeader = document.createElement('div');
+                        // tableHeader.className = "hd";
+                        // tableHeader.innerHTML = mycols;
+                        // //détection relachement touche sur un champ de la barre de titre
+                        // tableHeader.addEventListener("keyup",function(){
+                        //     // initialise affichage à visible
+                        //     var base = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk');
+                        //     base.forEach(function(e,i,a){
+                        //         e.style.display='initial';
+                        //     });
+                        //     // chxxx contient la chaine à chercher dans la colonne xxx
+                        //     var chid = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#id').value;
+                        //     var chetat = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#etat').value;
+                        //     var chtitre = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#titre').value.toUpperCase();
+                        //     var chauteur = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#auteur').value.toUpperCase();
+                        //     var chlot = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#lot').value.toUpperCase();
+                        //     var chcomment = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelector('#comment').value.toUpperCase();
+                        //     // basexxx contient toutes les <span class="xxx">
+                        //     var baseid = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .id');
+                        //     baseid.forEach(function(e,i,a){
+                        //         if(e.innerHTML.indexOf(chid)==-1){e.parentNode.style.display='none';}
+                        //     });
+                        //     var baseetat = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .etat');
+                        //     baseetat.forEach(function(e,i,a){
+                        //         if(e.innerHTML.indexOf(chetat)==-1){e.parentNode.style.display='none';}
+                        //     });
+                        //     var basetitre = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .titre');
+                        //     basetitre.forEach(function(e,i,a){
+                        //         if(e.innerHTML.toUpperCase().indexOf(chtitre)==-1){e.parentNode.style.display='none';}
+                        //     });
+                        //     var baseauteur = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .auteur');
+                        //     baseauteur.forEach(function(e,i,a){
+                        //         if(e.innerHTML.toUpperCase().indexOf(chauteur)==-1){e.parentNode.style.display='none';}
+                        //     });
+                        //     var baselot = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .lot');
+                        //     baselot.forEach(function(e,i,a){
+                        //         if(e.innerHTML.toUpperCase().indexOf(chlot)==-1){e.parentNode.style.display='none';}
+                        //     });
+                        //     var basecomment = document.querySelectorAll('oi-tasklist')[0].shadowRoot.querySelectorAll('.tk .comment');
+                        //     basecomment.forEach(function(e,i,a){
+                        //         if(e.innerHTML.toUpperCase().indexOf(chcomment)==-1){e.parentNode.style.display='none';}
+                        //     });
+                        //});
+
+                        //mise à jour du shadow DOM
+                        clone.appendChild(stitle);
+                        // clone.appendChild(tableHeader);
+                        // clone.appendChild(cloneline);
+                        this.createShadowRoot().appendChild(clone);
+                    });
+
+                    //console.dir(this.dataset);
+                }
+            }
+		});
+
+
+        document.registerElement('oi-kanban',{prototype: taskListPrototype});
+
+
+    })();
+
+</script>
